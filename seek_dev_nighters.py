@@ -10,32 +10,32 @@ def load_attempts(dev_url):
 
     while True:
 
-        response = requests.get(
+        users_records = requests.get(
             dev_url,
             {'page': page}
             ).json()
 
-        for page_with_users in response['records']:
-            yield page_with_users
+        for attemps in users_records['records']:
+            yield attemps
 
         page += 1
 
-        if page > response['number_of_pages']:
+        if page > users_records['number_of_pages']:
             break
 
 
-def get_local_user_time(data_user):
+def get_local_user_time(attemp):
 
-    time_zone = pytz.timezone(data_user['timezone'])
-    return datetime.fromtimestamp(data_user['timestamp']).replace(tzinfo=time_zone)
+    time_zone = pytz.timezone(attemp['timezone'])
+    return datetime.fromtimestamp(attemp['timestamp'], time_zone)
 
 
-def get_midnighters(page_with_users, time_from, time_to):
+def get_midnighters(attemps, time_from, time_to):
     midnighters = []
 
-    for user in page_with_users:
-        user_name = user['username']
-        local_user_time = get_local_user_time(user)
+    for attemp in attemps:
+        user_name = attemp['username']
+        local_user_time = get_local_user_time(attemp)
 
         if time_from < local_user_time.hour < time_to:
             midnighters.append(user_name)
@@ -56,9 +56,9 @@ if __name__ == '__main__':
     time_to = 5
 
     try:
-        page_with_users = load_attempts(dev_url)
+        attemps = load_attempts(dev_url)
         midnighters = get_midnighters(
-            page_with_users,
+            attemps,
             time_from,
             time_to
             )
@@ -67,4 +67,5 @@ if __name__ == '__main__':
     except requests.HTTPError as error:
         sys.exit('ERROR: {}'.format(error))
 
-    print(' Time script: {}'.format(timeit.default_timer() - start_time))
+    finally:
+        print(' Time script: {}'.format(timeit.default_timer() - start_time))
