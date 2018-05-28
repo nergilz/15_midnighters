@@ -15,8 +15,8 @@ def load_attempts(dev_url):
             {'page': page}
             ).json()
 
-        for attemps in users_records['records']:
-            yield attemps
+        for attempts in users_records['records']:
+            yield attempts
 
         page += 1
 
@@ -24,18 +24,18 @@ def load_attempts(dev_url):
             break
 
 
-def get_local_user_time(attemp):
+def get_local_user_time(attempt):
 
-    time_zone = pytz.timezone(attemp['timezone'])
-    return datetime.fromtimestamp(attemp['timestamp'], time_zone)
+    time_zone = pytz.timezone(attempt['timezone'])
+    return datetime.fromtimestamp(attempt['timestamp'], time_zone)
 
 
-def get_midnighters(attemps, time_from, time_to):
+def get_midnighters(attempts, time_from, time_to):
     midnighters = []
 
-    for attemp in attemps:
-        user_name = attemp['username']
-        local_user_time = get_local_user_time(attemp)
+    for attempt in attempts:
+        user_name = attempt['username']
+        local_user_time = get_local_user_time(attempt)
 
         if time_from < local_user_time.hour < time_to:
             midnighters.append(user_name)
@@ -56,16 +56,16 @@ if __name__ == '__main__':
     time_to = 5
 
     try:
-        attemps = load_attempts(dev_url)
+        attempts = load_attempts(dev_url)
         midnighters = get_midnighters(
-            attemps,
+            attempts,
             time_from,
             time_to
             )
-        pprint_night_owls(midnighters)
 
     except requests.HTTPError as error:
         sys.exit('ERROR: {}'.format(error))
 
-    finally:
-        print(' Time script: {}'.format(timeit.default_timer() - start_time))
+    pprint_night_owls(midnighters)
+
+    print(' Time script: {}'.format(timeit.default_timer() - start_time))

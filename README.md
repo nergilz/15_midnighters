@@ -14,16 +14,9 @@ The script find out who sent the tasks for verification after 24:00 before 5:00
 + It is recommended to use [virtualenv](https://docs.python.org/3/library/venv.html) 
 
 
-### How to install requests
-
+### How to install requests and pytz
 ```bash
-pip install requests  # or pip3 
-```
-
-### How to install pytz
-
-```bash
-pip install pytz  # or pip3 
+pip install -r requirements.txt
 ```
 
 ### Start script example
@@ -48,6 +41,7 @@ id185085967
 ```bash
 Python ver 3.5 (or higher)
 ```
+
 ---
 
 # Project Goals
